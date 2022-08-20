@@ -3,23 +3,31 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
+const nodeExternals = require('webpack-node-externals')
 const isProduction = process.env.NODE_ENV == 'production';
-
 
 const stylesHandler = MiniCssExtractPlugin.loader;
 
-
-
 const config = {
-    entry: './src/index.js',
+    entry: './server.js',
+    target: 'node',
+  node: {
+    __dirname: false,
+    __filename: false,
+  },
+  externals: [nodeExternals()],
     output: {
         path: path.resolve(__dirname, 'dist'),
     },
     devServer: {
-        open: true,
-        host: 'localhost',
-        port: 3000
+      open: true,
+      host: 'localhost',
+      port: 3000,
+      client: {
+        logging: 'info',
+        reconnect: true
+      },
+      webSocketServer: 'ws'
     },
     plugins: [
         new HtmlWebpackPlugin({
